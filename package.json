@@ -1,0 +1,26 @@
+{
+  "name": "moco-mcbe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "_app/index.js",
+  "bin": {
+    "moco": "_app/index.js"
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
+    "esbuild": "^0.25.11",
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.8.1"
+  }
+}

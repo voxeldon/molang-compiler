@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Moco Config",
+  "type": "object",
+  "properties": {
+    "packs": {
+      "type": "object",
+      "properties": {
+        "behaviorPack": {
+          "type": "string",
+          "description": "Path to the behavior pack"
+        },
+        "resourcePack": {
+          "type": "string",
+          "description": "Path to the resource pack"
+        }
+      },
+      "required": ["behaviorPack", "resourcePack", "customDir"]
+    }
+  }
+}
