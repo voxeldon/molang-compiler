@@ -1,133 +1,96 @@
 # 🧩 Molang Compiler — MOCO
 
-The **Molang Compiler (MOCO)** is a simple tool for organizing and compiling `.molang` files into valid Minecraft JSON structures.
-It allows you to write more readable and modular logic for Bedrock Edition.
+The **Molang Compiler (MOCO)** allows you to create modular `.molang` files and compiles them into JSON that is valid for Bedrock.
+
+---
+
+## Change Log
+
+* Function parameters: now supports **default values** (e.g., `beans = 3`)
+* **Safe parameter substitution**: only replaces standalone identifiers (will not alter `t.biome.id` when the parameter is `biome`)
+* **Nested function calls**: functions are capable of invoking other functions; the inliner operates until a stable state is reached
+* Fixed: no mandatory trailing `;` at the conclusion of each compiled statement
+* Minor parser enhancements for strings/commas within argument/default lists
 
 ---
 
 ## ⚡️ Installation & Command
 
-**Install globally** (recommended for project-wide access):
-
 ```bash
 npm i -g moco-mcbe
+# or
+npm i -D moco-mcbe
 ```
 
-**Or install locally** within a project:
-
-```bash
-npm i moco-mcbe --save-dev
-```
-
-Once installed, run the compiler with:
-
----
-
-### 🧰 Initialize Your Project
-
-Before running the compiler, you must initialize your project to create a configuration file:
+Initialize once:
 
 ```bash
 moco init
 ```
 
-This command generates a `moco.config.json` file in your project root.
-You can edit this file to customize:
-
-* Paths to your **BP** and **RP** directories
-* File inclusion or exclusion rules
-* Output behavior and logging options
-
-Example generated config:
-
-```json
-{
-  "packs": {
-    "behaviorPack": "./packs/BP",
-    "resourcePack": "./packs/RP"
-  }
-}
-```
-
----
-
-### ▶️ Run the Compiler
-
-Once initialized, you can compile all `.molang` files across your BP and RP directories using:
+Run:
 
 ```bash
 moco run
 ```
 
-This will:
-
-* Locate all `molang` folders within configured paths
-* Parse and expand all `.molang` files
-* Write the compiled content into their respective JSON files
-
 ---
 
 ## 📁 Setup
 
-1. In your project’s **Behavior Pack (BP)** or **Resource Pack (RP)** directory,
-   create a new folder named:
-
-   ```
-   molang
-   ```
-
-2. Inside that folder, create a file with the `.molang` extension, for example:
-
-   ```
-   my_script.molang
-   ```
-
-3. (Optional but recommended)
-   Associate the `.molang` file type with **C language syntax highlighting** in your code editor.
-   This will give you basic colorization for functions and math expressions.
+Establish a `molang` directory in your BP/RP and include `.molang` files. It is advisable to map `.molang` to C syntax highlighting.
 
 ---
 
-## ✏️ Example File Structure
-
-Here’s an example `.molang` file with exports, variables, and functions:
+## ✏️ Exports & Example
 
 ```c
 #export feature_rules/test_rule(minecraft:feature_rules/distribution/iterations);
-// ↑ Specifies where the compiled result will be written.
-//    Format: [output_path_in_BP_or_RP] (target_json_component_path)
-
-function myTestFunction(myVar, multiplier) {
-    // Basic function support:
-    // - Declare functions before using them.
-    // - Accepts multiple parameters.
-    // - No return values (functions are always void).
-    // - No lambdas or nested functions.
-
-    myVar * multiplier;
-    math.abs(myVar);
-    math.floor(myVar);
-}
-
-v.test = -1.5; // Comment
-myTestFunction(v.test, 2.5);
 ```
+
+This command writes the compiled statements to the specified JSON path.
 
 ---
 
-## ⚙️ Compilation Process
+## 🧠 Functions (New)
 
-When compiled, the script produces a JSON file at the specified export path.
-Each exported rule or function becomes an entry inside the target JSON object.
+MOCO accommodates simple functions that you can **declare once** and **inline** wherever they are invoked.
 
-**Example Output:**
+### Declaration
 
-```json
-{
-  "minecraft:feature_rules": {
-    "distribution": {
-      "iterations": "v.test = -1.5; v.test * 2.5; math.abs(v.test); math.floor(v.test);"
-    }
-  }
+```c
+function name(paramA, paramB, paramC = defaultExpr) {
+    // body;
 }
 ```
+
+* Parameters: multiple, optional **defaults** using `=`.
+* Defaults can reference **previous** parameters: `c = a + b`.
+* The body consists of plain statements separated by `;`.
+
+### Calls
+
+```c
+name(argA, argB);     // standard call
+name(1);              // missing parameters utilize defaults
+name();               // all parameters may derive from defaults
+```
+
+### Nested Calls
+
+Functions have the ability to invoke other functions. The compiler continuously inlines until no changes occur (with an internal safety limit to prevent infinite recursion).
+
+---
+
+## ✅ Worked Examples
+
+### 1) Basic + Defaults
+
+```c
+#export target/target(minecraft:json/target_component);
+
+function super(multiplier = 5){
+    v.my_var = v.my_var * multiplier;
+}
+
+function test(my_var, multiplier, divider = 3)

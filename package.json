@@ -1,6 +1,6 @@
 {
   "name": "moco-mcbe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "_app/index.js",
   "bin": {

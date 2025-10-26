@@ -1,4 +1,6 @@
 # Logs
+moco_config.json
+/packs
 logs
 *.log
 npm-debug.log*
