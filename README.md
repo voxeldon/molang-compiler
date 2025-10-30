@@ -82,15 +82,14 @@ Functions have the ability to invoke other functions. The compiler continuously 
 
 ---
 
-## ✅ Worked Examples
-
-### 1) Basic + Defaults
+## ✅ Example
 
 ```c
 #export target/target(minecraft:json/target_component);
 
-function super(multiplier = 5){
-    v.my_var = v.my_var * multiplier;
+function super(foo, bar = 3){
+    v.my_var = foo + bar;
 }
-
-function test(my_var, multiplier, divider = 3)
+v.foo = 5;
+function test(v.foo)
+```
