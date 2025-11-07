@@ -87,7 +87,7 @@ Functions have the ability to invoke other functions. The compiler continuously 
 ```c
 #export target/target(minecraft:json/target_component);
 
-function super(foo, bar = 3){
+function test(foo, bar = 3){
     v.my_var = foo + bar;
 }
 v.foo = 5;
